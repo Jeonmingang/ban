@@ -20,21 +20,35 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
 
-      - name: Cache Maven
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - name: Detect Maven project root
+        id: findroot
+        shell: bash
+        run: |
+          set -e
+          if [ -f pom.xml ]; then
+            echo "ROOT=." >> $GITHUB_ENV
+          elif [ -f ItemBanPlus/pom.xml ]; then
+            echo "ROOT=ItemBanPlus" >> $GITHUB_ENV
+          else
+            ROOT=$(dirname "$(git ls-files '**/pom.xml' | head -n1)")
+            if [ -z "$ROOT" ]; then
+              echo "No pom.xml found"; exit 1
+            fi
+            echo "ROOT=$ROOT" >> $GITHUB_ENV
+          fi
+          echo "Detected ROOT=$ROOT"
 
       - name: Build with Maven
         run: mvn -B -e -DskipTests package
+        working-directory: ${{ env.ROOT }}
+
+      - name: List build outputs (debug)
+        run: ls -alR
+        working-directory: ${{ env.ROOT }}
 
       - name: Upload Jar
         uses: actions/upload-artifact@v4
         with:
           name: ItemBanPlus-jar
-          path: |
-            ItemBanPlus/target/*.jar
+          path: ${{ env.ROOT }}/target/*.jar
+          if-no-files-found: error
