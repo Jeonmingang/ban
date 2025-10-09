@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>gg.minpack</groupId>
   <artifactId>ItemBanPlus</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
   <name>ItemBanPlus</name>
   <description>Ban items by Forge registry ID / name, block right-click/crafting/interaction (Pixelmon-friendly)</description>
 
