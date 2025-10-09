@@ -127,6 +127,7 @@ public class ItemBanPlusPlugin extends JavaPlugin implements Listener {
     }
 
     // ===== Right-click block (air/block & entity) =====
+    // ===== Right-click block (air/block) =====
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent e) {
         Action a = e.getAction();
@@ -136,18 +137,18 @@ public class ItemBanPlusPlugin extends JavaPlugin implements Listener {
             e.setCancelled(true);
             deny(e.getPlayer(), "우클릭");
         }
-
-
-@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-public void onLeftClick(PlayerInteractEvent e) {
-    Action a = e.getAction();
-    if (a != Action.LEFT_CLICK_AIR && a != Action.LEFT_CLICK_BLOCK) return;
-    ItemStack is = e.getItem();
-    if (matchesAny(is, leftClickMatchers)) {
-        e.setCancelled(true);
-        deny(e.getPlayer(), "좌클릭");
     }
-}
+
+    // ===== Left-click block (air/block) =====
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onLeftClick(PlayerInteractEvent e) {
+        Action a = e.getAction();
+        if (a != Action.LEFT_CLICK_AIR && a != Action.LEFT_CLICK_BLOCK) return;
+        ItemStack is = e.getItem();
+        if (matchesAny(is, leftClickMatchers)) {
+            e.setCancelled(true);
+            deny(e.getPlayer(), "좌클릭");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
