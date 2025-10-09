@@ -31,6 +31,7 @@ public class ItemBanPlusPlugin extends JavaPlugin implements Listener {
     private FileConfiguration cfg;
     private String msgDenied;
     private List<Pattern> rightClickMatchers = new ArrayList<>();
+    private List<Pattern> leftClickMatchers = new ArrayList<>();
     private List<Pattern> craftMatchers = new ArrayList<>();
     private List<Pattern> interactMatchers = new ArrayList<>();
     private boolean detectPixelmonInvByTitle = true;
@@ -55,6 +56,7 @@ public class ItemBanPlusPlugin extends JavaPlugin implements Listener {
         detectPixelmonInvByTitle = cfg.getBoolean("options.detect-pixelmon-inventory-by-title", true);
 
         rightClickMatchers = compile(cfg.getStringList("bans.right-click"));
+        leftClickMatchers = compile(cfg.getStringList("bans.left-click"));
         craftMatchers = compile(cfg.getStringList("bans.craft"));
         interactMatchers = compile(cfg.getStringList("bans.pixelmon-interact"));
     }
@@ -134,6 +136,18 @@ public class ItemBanPlusPlugin extends JavaPlugin implements Listener {
             e.setCancelled(true);
             deny(e.getPlayer(), "우클릭");
         }
+
+
+@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+public void onLeftClick(PlayerInteractEvent e) {
+    Action a = e.getAction();
+    if (a != Action.LEFT_CLICK_AIR && a != Action.LEFT_CLICK_BLOCK) return;
+    ItemStack is = e.getItem();
+    if (matchesAny(is, leftClickMatchers)) {
+        e.setCancelled(true);
+        deny(e.getPlayer(), "좌클릭");
+    }
+}
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
